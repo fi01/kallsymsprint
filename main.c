@@ -24,6 +24,7 @@ static bool
 do_get_kallsyms(const char *file_name, size_t len)
 {
   int fd;
+  unsigned long* mem;
   bool result;
 
   fd = open(file_name, O_RDONLY);
@@ -32,7 +33,6 @@ do_get_kallsyms(const char *file_name, size_t len)
     return false;
   }
 
-  unsigned long* mem;
   mem = (unsigned long*)mmap(NULL, len, PROT_READ, MAP_SHARED, fd, 0);
   if(mem == MAP_FAILED)
   {
@@ -61,6 +61,8 @@ int main(int argc, char** argv)
 {
   char *file_name;
   size_t len;
+
+  kallsyms_in_memory_set_verbose(true);
 
   if (argc !=2 ) {
     fprintf(stderr, "Usage: %s FILENAME\n", argv[0]);
