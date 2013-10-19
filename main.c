@@ -25,7 +25,7 @@ do_get_kallsyms(const char *file_name, size_t len)
 {
   int fd;
   unsigned long* mem;
-  bool result;
+  kallsyms *info;
 
   fd = open(file_name, O_RDONLY);
   if (fd < 0) {
@@ -41,9 +41,9 @@ do_get_kallsyms(const char *file_name, size_t len)
     return false;
   }
 
-  result = kallsyms_in_memory_init(mem, len);
-  if (result) {
-    kallsyms_in_memory_print_all();
+  info = kallsyms_in_memory_init(mem, len);
+  if (info) {
+    kallsyms_in_memory_print_all(info);
   }
 
   if (munmap(mem, len)) {
@@ -54,7 +54,7 @@ do_get_kallsyms(const char *file_name, size_t len)
     fprintf(stderr, "close error \"%s\"(%d)\n", strerror(errno), errno);
   }
 
-  return result;
+  return info != NULL;
 }
 
 int main(int argc, char** argv)
